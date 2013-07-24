@@ -605,6 +605,15 @@ $functions = array(
         'type'        => 'write',
         'capabilities'=> 'moodle/course:update,moodle/course:changecategory,moodle/course:changefullname,moodle/course:changeshortname,moodle/course:changeidnumber,moodle/course:changesummary,moodle/course:visibility',
     ),
+                   
+    'core_course_create_sections' => array(
+        'classname'   => 'core_course_external',
+        'methodname'  => 'create_sections',
+        'classpath'   => 'course/externallib.php',
+        'description' => 'Adds a section to a course',
+        'type'        => 'write',
+        'capabilities'=> 'moodle/course:update',
+    ),
 
     // === course category related functions ===
 

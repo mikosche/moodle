@@ -1292,6 +1292,103 @@ class core_course_external extends external_api {
     public static function import_course_returns() {
         return null;
     }
+    
+    /**
+     * Returns description of method parameters
+     *
+     * @return external_function_parameters
+     * @since Moodle FuturDev
+     */
+    public static function create_sections_parameters() {
+        return new external_function_parameters(
+            array(
+                'courseid' => new external_value(PARAM_INT, 'ID of the course'),
+                'sections' => new external_multiple_structure(
+                   new external_single_structure(
+                       array(
+                           'name' => new external_value(PARAM_TEXT, 'Name of the section'),
+                           'summary' => new external_value(PARAM_TEXT, 'Summary of the section', VALUE_OPTIONAL),
+                           'visible' => new external_value(PARAM_INT,  '1: available to student, 0:not available', VALUE_OPTIONAL)
+                       )
+                    )
+                )
+            )
+         );
+    }
+                  
+    /**
+     * Add a section in a course
+     *
+     * @return section id
+     * @since Moodle FuturDev
+     */
+    public static function create_sections($courseid, $sections){
+
+        global $CFG, $DB;
+        require_once($CFG->dirroot . "/course/lib.php");
+
+        $params = self::validate_parameters(self::create_sections_parameters(), array('courseid' =>$courseid, 'sections' => $sections));
+        $course = $DB->get_record('course', array('id'=>$courseid), '*', MUST_EXIST);
+        $courseformatoptions = course_get_format($course)->get_format_options();
+        $result = array();
+        $sectionarray = array();
+
+
+        $context = context_course::instance($courseid);
+        self::validate_context($context);
+        require_capability('moodle/course:update', $context);
+
+        $transaction = $DB->start_delegated_transaction();
+        $sectionnumber = $courseformatoptions['numsections'];
+        foreach ($params['sections'] as $sec){
+            $section = (object)$sec;
+
+            if(trim($section->name) == ''){
+                throw new invalid_parameter_exception('Invalid section name');
+            }
+
+            if(is_null($section->visible)){
+                $section->visible = 1;
+            }
+
+            if($section->visible != 0 && $section->visible != 1){
+                throw new invalid_parameter_exception('Visibility must be 1 or 0');
+            }
+
+            $sectionnumber++;
+            course_get_format($course)->update_course_format_options(array('numsections' => $sectionnumber));
+            if ($newsection = $DB->get_record("course_sections", array("course"=>$courseid, "section"=>$sectionnumber))) {
+
+                $DB->set_field("course_sections", "name", "$section->name", array("id"=>$newsection->id));
+                $DB->set_field("course_sections", "summary", "$section->summary", array("id"=>$newsection->id));
+                $DB->set_field("course_sections", "visible", $section->visible, array("id"=>$newsection->id));
+
+                $sectionarray['id'] = $newsection->id;
+                $sectionarray['name'] = $section->name;
+                $result[] = $sectionarray;
+            }
+        }
+        $transaction->allow_commit();
+
+        return $result;
+    }
+                  
+    /**
+     * Returns description of method result value
+     *
+     * @return external_description
+     * @since Moodle FuturDev
+     */
+    public static function create_sections_returns() {
+        return new external_multiple_structure(
+            new external_single_structure(
+               array(
+                 'id' => new external_value(PARAM_INT, 'new section id'),
+                 'name' => new external_value(PARAM_TEXT, 'new section name'),
+              )
+           )
+        );        
+    }
 
     /**
      * Returns description of method parameters
