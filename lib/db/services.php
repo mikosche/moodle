@@ -653,6 +653,15 @@ $functions = array(
         'capabilities'=> 'moodle/backup:backuptargetimport, moodle/restore:restoretargetimport',
     ),
 
+    'core_course_create_modules' => array(
+        'classname'   => 'core_course_external',
+        'methodname'  => 'create_modules',
+        'classpath'   => 'course/externallib.php',
+        'description' => 'Creates modules in a course',
+        'type'        => 'write',
+        'capabilities'=> '',
+    ),
+
     // === message related functions ===
 
     'moodle_message_send_instantmessages' => array(
