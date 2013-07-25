@@ -659,7 +659,7 @@ $functions = array(
         'classpath'   => 'course/externallib.php',
         'description' => 'Creates modules in a course',
         'type'        => 'write',
-        'capabilities'=> '',
+        'capabilities'=> 'moodle/course:manageactivities',
     ),
 
     // === message related functions ===
