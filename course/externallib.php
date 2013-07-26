@@ -1297,7 +1297,7 @@ class core_course_external extends external_api {
      * Returns description of method parameters
      *
      * @return external_function_parameters
-     * @since Moodle FuturDev
+     * @since Moodle 2.5
      */
     public static function create_sections_parameters() {
         return new external_function_parameters(
@@ -1320,7 +1320,7 @@ class core_course_external extends external_api {
      * Add a section in a course
      *
      * @return section id
-     * @since Moodle FuturDev
+     * @since Moodle 2.5
      */
     public static function create_sections($courseid, $sections){
 
@@ -1377,7 +1377,7 @@ class core_course_external extends external_api {
      * Returns description of method result value
      *
      * @return external_description
-     * @since Moodle FuturDev
+     * @since Moodle 2.5
      */
     public static function create_sections_returns() {
         return new external_multiple_structure(
