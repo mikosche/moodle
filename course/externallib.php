@@ -1297,7 +1297,7 @@ class core_course_external extends external_api {
      * Returns description of method parameters
      *
      * @return external_function_parameters
-     * @since Moodle 2.5
+     * @since Moodle 2.6
      */
     public static function create_sections_parameters() {
         return new external_function_parameters(
@@ -1320,7 +1320,7 @@ class core_course_external extends external_api {
      * Add a section in a course
      *
      * @return section id
-     * @since Moodle 2.5
+     * @since Moodle 2.6
      */
     public static function create_sections($courseid, $sections){
 
@@ -1355,8 +1355,10 @@ class core_course_external extends external_api {
                 throw new invalid_parameter_exception('Visibility must be 1 or 0');
             }
 
-            $sectionnumber++;
+            $sectionnumber = $sectionnumber + 1;
+            course_create_sections_if_missing($courseid, array($sectionnumber));
             course_get_format($course)->update_course_format_options(array('numsections' => $sectionnumber));
+
             if ($newsection = $DB->get_record("course_sections", array("course"=>$courseid, "section"=>$sectionnumber))) {
 
                 $DB->set_field("course_sections", "name", "$section->name", array("id"=>$newsection->id));
@@ -1365,6 +1367,7 @@ class core_course_external extends external_api {
 
                 $sectionarray['id'] = $newsection->id;
                 $sectionarray['name'] = $section->name;
+                $sectionarray['sectionnumber'] = $sectionnumber;
                 $result[] = $sectionarray;
             }
         }
@@ -1377,13 +1380,14 @@ class core_course_external extends external_api {
      * Returns description of method result value
      *
      * @return external_description
-     * @since Moodle 2.5
+     * @since Moodle 2.6
      */
     public static function create_sections_returns() {
         return new external_multiple_structure(
             new external_single_structure(
                array(
                  'id' => new external_value(PARAM_INT, 'new section id'),
+                 'sectionnumber' => new external_value(PARAM_INT, 'section number in the course'),
                  'name' => new external_value(PARAM_TEXT, 'new section name'),
               )
            )
