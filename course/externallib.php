@@ -1851,7 +1851,7 @@ class core_course_external extends external_api {
      * Describes the parameters for cerate_modules.
      *
      * @return external_external_function_parameters
-     * @since Moodle 2.5
+     * @since Moodle 2.6
      */
     public static function create_modules_parameters() {
         return new external_function_parameters(
@@ -1877,7 +1877,7 @@ class core_course_external extends external_api {
      * Creates modules
      *
      * @param array $cmids the course module ids
-     * @since Moodle 2.5
+     * @since Moodle 2.6
      */
     public static function create_modules($courseid, $modules) {
         global $CFG, $DB;
@@ -1937,7 +1937,7 @@ class core_course_external extends external_api {
      * Describes the create_modules return value.
      *
      * @return external_single_structure
-     * @since Moodle 2.5
+     * @since Moodle 2.6
      */
     public static function create_modules_returns() {
         return new external_multiple_structure(
